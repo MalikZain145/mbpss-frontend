@@ -31,10 +31,21 @@ export default function Footer() {
               MBPSS provides professional property certification and compliance services for residential, commercial and new build properties across London and the UK.
             </p>
             <div className="footer-socials">
-              <a href="#" aria-label="Facebook"><Facebook size={18} /></a>
-              <a href="#" aria-label="Twitter"><Twitter size={18} /></a>
-              <a href="#" aria-label="LinkedIn"><Linkedin size={18} /></a>
-              <a href="#" aria-label="Instagram"><Instagram size={18} /></a>
+              <a href="/" onClick={(e) => e.preventDefault()} aria-label="Facebook">
+                  <Facebook size={18} />
+              </a>
+
+              <a href="/" onClick={(e) => e.preventDefault()} aria-label="Twitter">
+                  <Twitter size={18} />
+              </a>
+
+              <a href="/" onClick={(e) => e.preventDefault()} aria-label="LinkedIn">
+                  <Linkedin size={18} />
+              </a>
+
+              <a href="/" onClick={(e) => e.preventDefault()} aria-label="Instagram">
+                  <Instagram size={18} />
+              </a>
             </div>
           </div>
 
