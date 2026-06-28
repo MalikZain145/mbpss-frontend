@@ -33,7 +33,9 @@ const clients = [
   { name: 'My Paragon',                 url: 'https://www.myparagon.co.uk/',                               initials: 'MP',  color: '#742a2a' },
   { name: 'KFH',                        url: 'https://www.kfh.co.uk/',                                     initials: 'KFH', color: '#2c5282' },
   { name: 'Bond Docwra',                url: 'https://bonddocwra.com/hmo-properties/',                     initials: 'BD',  color: '#3c366b' },
-  { name: 'Mizen',                      url: 'https://www.mizen.co.uk/',                                   initials: 'MZ',  color: '#1a4731' },
+  { name: 'Mizen',                      url: 'https://www.mizen.co.uk/',                                  initials: 'MZ',  color: '#1a4731' },
+  { name: 'Sterling Estates',           url: 'https://www.sterlingestates.org.uk',                        initials: 'SE',  color: '#1a5276' },
+  { name: 'FSQ Design Build',           url: 'https://www.fsqdesignbuild.co.uk',                          initials: 'FSQ', color: '#6e2f1a' },
 ];
 
 
