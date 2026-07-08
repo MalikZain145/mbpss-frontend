@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, ChevronDown, ChevronRight } from 'lucide-react';
-import MBPSSLogo from './MBPSSLogo';
 import './Navbar.css';
 
 const residentialServices = [
@@ -29,27 +28,27 @@ const newBuildServices = [
   { name: 'Water Calculations (Part G)', slug: 'water-calculations' },
   { name: 'Floorplan (2D & 3D)', slug: 'floorplan' },
   { name: 'Fire Risk Assessment', slug: 'fire-risk' },
+  { name: 'Part O — Overheating Assessment', slug: 'part-o' },
+  { name: 'Part F — Ventilation Testing', slug: 'part-f' },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled]           = useState(false);
   const [mobileOpen, setMobileOpen]       = useState(false);
-  const [menuOpen, setMenuOpen]           = useState(false);   // visible state
-  const [menuClosing, setMenuClosing]     = useState(false);   // play close anim
+  const [menuOpen, setMenuOpen]           = useState(false);
+  const [menuClosing, setMenuClosing]     = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const closeTimer  = useRef(null);
   const navItemRef  = useRef(null);
   const location    = useLocation();
 
-  /* scroll */
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  /* route change → instantly close, no animation */
   useEffect(() => {
     clearTimeout(closeTimer.current);
     setMenuOpen(false);
@@ -58,7 +57,6 @@ export default function Navbar() {
     setMobileServicesOpen(false);
   }, [location.pathname]);
 
-  /* body scroll lock */
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -81,7 +79,6 @@ export default function Navbar() {
   };
 
   const handleMouseLeaveTrigger = () => {
-    /* small grace period — if pointer reaches the menu before timer fires, timer is cleared */
     closeTimer.current = setTimeout(forceClose, 120);
   };
 
@@ -111,7 +108,11 @@ export default function Navbar() {
       <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
         <div className="container navbar-inner">
           <Link to="/" className="navbar-logo">
-            <MBPSSLogo />
+            <img
+              src="/logo.png"
+              alt="MBPSS Property Solutions"
+              style={{ height: '52px', width: 'auto', display: 'block' }}
+            />
           </Link>
 
           {/* Desktop links */}
@@ -137,7 +138,6 @@ export default function Navbar() {
             </a>
             <Link to="/quote" className="btn-primary btn-sm">Get Quote</Link>
 
-            {/* ── Mobile Toggle ── always shows correct icon ── */}
             <button
               className="mobile-toggle"
               onClick={() => setMobileOpen(prev => !prev)}
@@ -160,7 +160,6 @@ export default function Navbar() {
           onMouseEnter={handleMouseEnterMenu}
           onMouseLeave={handleMouseLeaveMenu}
         >
-          {/* bridge strip — fills gap between navbar and menu so hover doesn't break */}
           <div className="mega-bridge" />
           <div className="mega-menu-inner">
             <div className="mega-col">
