@@ -111,7 +111,7 @@ export default function Navbar() {
             <img
               src="/logo.png"
               alt="MBPSS Property Solutions"
-              style={{ height: '52px', width: 'auto', display: 'block' }}
+              style={{ height: '68px', width: 'auto', display: 'block' }}
             />
           </Link>
 
