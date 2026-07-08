@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Home as HomeIcon, Building2, HardHat, Zap, Shield, Map, FileText, Droplets, Flame, Key, AlertTriangle, Phone, MessageSquare } from 'lucide-react';
+import { ArrowRight, Home as HomeIcon, Building2, HardHat, Zap, Shield, Map, FileText, Droplets, Flame, Key, AlertTriangle, Phone, MessageSquare, Wind } from 'lucide-react';
 import './Services.css';
 
 const allServices = {
@@ -27,6 +27,8 @@ const allServices = {
     { icon:<Droplets size={24}/>,       title:'Water Calculations (Part G)',          desc:'Part G water usage calculations required for Building Regulations compliance.',                                slug:'water-calculations' },
     { icon:<Map size={24}/>,            title:'Floorplan (2D & 3D)',                  desc:'2D and 3D floorplans for new build developments and planning submissions.',                                    slug:'floorplan' },
     { icon:<Flame size={24}/>,          title:'Fire Risk Assessment',                 desc:'Fire risk assessments for new build developments and converted properties.',                                   slug:'fire-risk' },
+    { icon:<Shield size={24}/>,         title:'Part O — Overheating Assessment',      desc:'Dynamic Thermal Modelling (DTM) and simplified method overheating assessments required for all new dwellings in England under Part O Building Regulations.',  slug:'part-o' },
+    { icon:<Wind size={24}/>,           title:'Part F — Ventilation Testing',         desc:'Ventilation testing and reports for fan and mechanical heat recovery systems. Required under Part F of Building Regulations for new build properties.',         slug:'part-f' },
   ],
 };
 
