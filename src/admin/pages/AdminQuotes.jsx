@@ -3,9 +3,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAdminApi, usePolling } from '../hooks/useAdminApi';
 import { Search, Trash2, Eye, RefreshCw, ArrowLeft, Save, ChevronLeft, ChevronRight, Wifi } from 'lucide-react';
 
-/* ══════════════════════════════════════
-   QUOTES LIST — polls every 8s
-══════════════════════════════════════ */
 export function AdminQuotesList() {
   const { request }          = useAdminApi();
   const [status, setStatus]  = useState('all');
@@ -37,7 +34,7 @@ export function AdminQuotesList() {
     : quotes;
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
       <div className="ap-header">
         <div>
           <h1>Quote Requests</h1>
@@ -61,6 +58,7 @@ export function AdminQuotesList() {
         </div>
       </div>
 
+      {/* DESKTOP TABLE */}
       <div className="ap-table-wrap">
         <table className="ap-table">
           <thead>
@@ -82,15 +80,41 @@ export function AdminQuotesList() {
                     <td style={{fontSize:12}}>{q.postcode||'—'}</td>
                     <td><span className={`ap-badge ap-badge-${q.status}`}>{q.status}</span></td>
                     <td style={{fontSize:12,color:'#64748b'}}>{new Date(q.createdAt).toLocaleDateString('en-GB')}</td>
-                    <td style={{display:'flex',gap:6}}>
+                    <td><div className="ap-td-actions">
                       <Link to={`/admin/quotes/${q._id}`} className="ap-btn ap-btn-ghost ap-btn-sm"><Eye size={13}/></Link>
                       <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(q._id)}><Trash2 size={13}/></button>
-                    </td>
+                    </div></td>
                   </tr>
                 ))
             }
           </tbody>
         </table>
+      </div>
+
+      {/* MOBILE CARDS */}
+      <div className="ap-mobile-list">
+        {loading && !quotes.length
+          ? <div className="ap-loading">Loading…</div>
+          : filtered.length === 0
+            ? <div className="ap-empty">No quote requests found.</div>
+            : filtered.map(q => (
+              <div key={q._id} className="ap-mcard">
+                <div className="ap-mcard-top">
+                  <span className="ap-mcard-name">{q.name}</span>
+                  <span className={`ap-badge ap-badge-${q.status}`}>{q.status}</span>
+                </div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Email</span><span className="ap-mcard-val">{q.email}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Phone</span><span className="ap-mcard-val">{q.phone}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Services</span><span className="ap-mcard-val">{(q.selectedServices||[]).join(', ')||'—'}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Postcode</span><span className="ap-mcard-val">{q.postcode||'—'}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Date</span><span className="ap-mcard-val">{new Date(q.createdAt).toLocaleDateString('en-GB')}</span></div>
+                <div className="ap-mcard-actions">
+                  <Link to={`/admin/quotes/${q._id}`} className="ap-btn ap-btn-ghost ap-btn-sm"><Eye size={13}/> View</Link>
+                  <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(q._id)}><Trash2 size={13}/> Delete</button>
+                </div>
+              </div>
+            ))
+        }
       </div>
 
       {pages > 1 && (
@@ -104,9 +128,6 @@ export function AdminQuotesList() {
   );
 }
 
-/* ══════════════════════════════════════
-   QUOTE DETAIL
-══════════════════════════════════════ */
 export function AdminQuoteDetail() {
   const { id }              = useParams();
   const { request }         = useAdminApi();
@@ -115,11 +136,7 @@ export function AdminQuoteDetail() {
   const [status, setStatus] = useState('new');
   const [saved, setSaved]   = useState(false);
 
-  const { data: quote, refresh } = usePolling(
-    () => request(`/quotes/${id}`),
-    10000,
-    [id]
-  );
+  const { data: quote, refresh } = usePolling(() => request(`/quotes/${id}`), 10000, [id]);
 
   useEffect(() => {
     if (quote) { setNotes(quote.adminNotes||''); setStatus(quote.status); }
@@ -140,27 +157,27 @@ export function AdminQuoteDetail() {
   if (!quote) return <div className="ap-loading">Loading…</div>;
 
   const row = (label, value) => (
-    <div style={{display:'flex',justifyContent:'space-between',padding:'9px 0',borderBottom:'1px solid rgba(255,255,255,0.05)',fontSize:13}}>
-      <span style={{color:'#64748b'}}>{label}</span>
-      <span style={{color:'#e2e8f0'}}>{value}</span>
+    <div className="ap-drow">
+      <span className="ap-drow-label">{label}</span>
+      <span className="ap-drow-val">{value}</span>
     </div>
   );
 
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:20}}>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12}}>
+    <div style={{display:'flex',flexDirection:'column',gap:16}}>
+      <div className="ap-detail-bar">
         <Link to="/admin/quotes" className="ap-btn ap-btn-ghost"><ArrowLeft size={14}/> Back</Link>
-        <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
-          <select value={status} onChange={e=>setStatus(e.target.value)} className="ap-select" style={{width:'auto'}}>
+        <div className="ap-detail-actions">
+          <select value={status} onChange={e=>setStatus(e.target.value)} className="ap-select" style={{width:'auto',minWidth:110}}>
             {['new','read','responded','closed'].map(s=><option key={s} value={s}>{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
           </select>
-          <button className="ap-btn ap-btn-primary" onClick={save}><Save size={13}/> {saved?'✓ Saved!':'Save Changes'}</button>
+          <button className="ap-btn ap-btn-primary" onClick={save}><Save size={13}/> {saved?'✓ Saved!':'Save'}</button>
           <button className="ap-btn ap-btn-danger" onClick={del}><Trash2 size={13}/> Delete</button>
         </div>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:20}}>
-        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+      <div className="ap-grid ap-grid-detail">
+        <div style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
           <div className="ap-card">
             <h3>Contact Details</h3>
             {row('Name',   quote.name)}
@@ -178,17 +195,17 @@ export function AdminQuoteDetail() {
           {quote.notes && (
             <div className="ap-card">
               <h3>Client Notes</h3>
-              <p style={{fontSize:13,color:'#94a3b8',lineHeight:1.7}}>{quote.notes}</p>
+              <p style={{fontSize:13,color:'#94a3b8',lineHeight:1.7,whiteSpace:'pre-wrap'}}>{quote.notes}</p>
             </div>
           )}
         </div>
 
-        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+        <div style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
           <div className="ap-card">
             <h3>Services Requested</h3>
             <div style={{display:'flex',flexDirection:'column',gap:6}}>
               {(quote.selectedServices||[]).map((s,i) => (
-                <div key={i} style={{background:'rgba(201,168,76,0.1)',border:'1px solid rgba(201,168,76,0.2)',color:'#c9a84c',padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600}}>{s}</div>
+                <div key={i} style={{background:'rgba(201,168,76,0.1)',border:'1px solid rgba(201,168,76,0.2)',color:'#c9a84c',padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,wordBreak:'break-word'}}>{s}</div>
               ))}
             </div>
           </div>
@@ -199,8 +216,8 @@ export function AdminQuoteDetail() {
           <div className="ap-card">
             <h3>Meta</h3>
             {row('Submitted', new Date(quote.createdAt).toLocaleString('en-GB'))}
-            <div style={{display:'flex',justifyContent:'space-between',padding:'9px 0',fontSize:13}}>
-              <span style={{color:'#64748b'}}>Status</span>
+            <div className="ap-drow" style={{borderBottom:'none'}}>
+              <span className="ap-drow-label">Status</span>
               <span className={`ap-badge ap-badge-${quote.status}`}>{quote.status}</span>
             </div>
           </div>

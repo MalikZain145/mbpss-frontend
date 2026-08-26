@@ -68,7 +68,7 @@ export default function AdminReviews() {
       {/* ── ANALYTICS ── */}
       {view==='analytics' && (
         <div style={{display:'flex',flexDirection:'column',gap:16}}>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14}}>
+          <div className="ap-grid ap-grid-2">
             {[
               { label:'Total Approved', val:analytics?.total??'—',      color:'#c9a84c' },
               { label:'Avg Rating',     val:analytics?.avgRating>0?`${analytics.avgRating}★`:'N/A', color:'#22c55e' },
@@ -82,7 +82,7 @@ export default function AdminReviews() {
             ))}
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+          <div className="ap-grid ap-grid-2">
             <div className="ap-card">
               <h3>Sentiment Breakdown</h3>
               {!sentData.length ? <div style={{height:200,display:'flex',alignItems:'center',justifyContent:'center',color:'#64748b',fontSize:13}}>No data yet</div> : (

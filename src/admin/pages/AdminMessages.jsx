@@ -3,9 +3,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAdminApi, usePolling } from '../hooks/useAdminApi';
 import { Search, Trash2, Eye, RefreshCw, ArrowLeft, Save, ChevronLeft, ChevronRight, Wifi } from 'lucide-react';
 
-/* ══════════════════════════════════════
-   MESSAGES LIST — polls every 8s
-══════════════════════════════════════ */
 export function AdminMessagesList() {
   const { request }         = useAdminApi();
   const [status, setStatus] = useState('all');
@@ -37,7 +34,7 @@ export function AdminMessagesList() {
     : contacts;
 
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+    <div style={{display:'flex',flexDirection:'column',gap:16}}>
       <div className="ap-header">
         <div>
           <h1>Contact Messages</h1>
@@ -61,6 +58,7 @@ export function AdminMessagesList() {
         </div>
       </div>
 
+      {/* DESKTOP TABLE */}
       <div className="ap-table-wrap">
         <table className="ap-table">
           <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Message</th><th>Status</th><th>Date</th><th></th></tr></thead>
@@ -80,15 +78,41 @@ export function AdminMessagesList() {
                     </td>
                     <td><span className={`ap-badge ap-badge-${c.status}`}>{c.status}</span></td>
                     <td style={{fontSize:12,color:'#64748b'}}>{new Date(c.createdAt).toLocaleDateString('en-GB')}</td>
-                    <td style={{display:'flex',gap:6}}>
+                    <td><div className="ap-td-actions">
                       <Link to={`/admin/messages/${c._id}`} className="ap-btn ap-btn-ghost ap-btn-sm"><Eye size={13}/></Link>
                       <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(c._id)}><Trash2 size={13}/></button>
-                    </td>
+                    </div></td>
                   </tr>
                 ))
             }
           </tbody>
         </table>
+      </div>
+
+      {/* MOBILE CARDS */}
+      <div className="ap-mobile-list">
+        {loading && !contacts.length
+          ? <div className="ap-loading">Loading…</div>
+          : filtered.length===0
+            ? <div className="ap-empty">No messages found.</div>
+            : filtered.map(c=>(
+              <div key={c._id} className="ap-mcard">
+                <div className="ap-mcard-top">
+                  <span className="ap-mcard-name">{c.name}</span>
+                  <span className={`ap-badge ap-badge-${c.status}`}>{c.status}</span>
+                </div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Email</span><span className="ap-mcard-val">{c.email}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Phone</span><span className="ap-mcard-val">{c.phone||'—'}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Service</span><span className="ap-mcard-val">{c.service||'—'}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Message</span><span className="ap-mcard-val">{c.message?.slice(0,110)}{c.message?.length>110?'…':''}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Date</span><span className="ap-mcard-val">{new Date(c.createdAt).toLocaleDateString('en-GB')}</span></div>
+                <div className="ap-mcard-actions">
+                  <Link to={`/admin/messages/${c._id}`} className="ap-btn ap-btn-ghost ap-btn-sm"><Eye size={13}/> View</Link>
+                  <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(c._id)}><Trash2 size={13}/> Delete</button>
+                </div>
+              </div>
+            ))
+        }
       </div>
 
       {pages>1 && (
@@ -102,9 +126,6 @@ export function AdminMessagesList() {
   );
 }
 
-/* ══════════════════════════════════════
-   MESSAGE DETAIL
-══════════════════════════════════════ */
 export function AdminMessageDetail() {
   const { id }                = useParams();
   const { request }           = useAdminApi();
@@ -113,11 +134,7 @@ export function AdminMessageDetail() {
   const [status, setStatus]   = useState('new');
   const [saved, setSaved]     = useState(false);
 
-  const { data: contact, refresh } = usePolling(
-    () => request(`/contacts/${id}`),
-    15000,
-    [id]
-  );
+  const { data: contact, refresh } = usePolling(() => request(`/contacts/${id}`), 15000, [id]);
 
   useEffect(() => {
     if (contact) { setNotes(contact.adminNotes||''); setStatus(contact.status); }
@@ -138,18 +155,18 @@ export function AdminMessageDetail() {
   if (!contact) return <div className="ap-loading">Loading…</div>;
 
   const row = (label, value) => (
-    <div style={{display:'flex',justifyContent:'space-between',padding:'9px 0',borderBottom:'1px solid rgba(255,255,255,0.05)',fontSize:13}}>
-      <span style={{color:'#64748b'}}>{label}</span>
-      <span style={{color:'#e2e8f0'}}>{value}</span>
+    <div className="ap-drow">
+      <span className="ap-drow-label">{label}</span>
+      <span className="ap-drow-val">{value}</span>
     </div>
   );
 
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:20}}>
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12}}>
+    <div style={{display:'flex',flexDirection:'column',gap:16}}>
+      <div className="ap-detail-bar">
         <Link to="/admin/messages" className="ap-btn ap-btn-ghost"><ArrowLeft size={14}/> Back</Link>
-        <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
-          <select value={status} onChange={e=>setStatus(e.target.value)} className="ap-select" style={{width:'auto'}}>
+        <div className="ap-detail-actions">
+          <select value={status} onChange={e=>setStatus(e.target.value)} className="ap-select" style={{width:'auto',minWidth:110}}>
             {['new','read','responded'].map(s=><option key={s} value={s}>{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
           </select>
           <button className="ap-btn ap-btn-primary" onClick={save}><Save size={13}/> {saved?'✓ Saved!':'Save'}</button>
@@ -157,8 +174,8 @@ export function AdminMessageDetail() {
         </div>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr 300px',gap:20}}>
-        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+      <div className="ap-grid ap-grid-detail">
+        <div style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
           <div className="ap-card">
             <h3>Contact Details</h3>
             {row('Name', contact.name)}
@@ -168,16 +185,15 @@ export function AdminMessageDetail() {
           </div>
           <div className="ap-card">
             <h3>Message</h3>
-            <p style={{fontSize:14,color:'#94a3b8',lineHeight:1.8,whiteSpace:'pre-wrap'}}>{contact.message}</p>
+            <p style={{fontSize:14,color:'#94a3b8',lineHeight:1.8,whiteSpace:'pre-wrap',wordBreak:'break-word'}}>{contact.message}</p>
             <a href={`mailto:${contact.email}?subject=Re: Your MBPSS Enquiry`}
-              className="ap-btn ap-btn-primary"
-              style={{marginTop:16,display:'inline-flex'}}>
+              className="ap-btn ap-btn-primary" style={{marginTop:16,display:'inline-flex'}}>
               ✉ Reply by Email
             </a>
           </div>
         </div>
 
-        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+        <div style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
           <div className="ap-card">
             <h3>Admin Notes</h3>
             <textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={5} className="ap-textarea" placeholder="Internal notes…"/>
@@ -185,8 +201,8 @@ export function AdminMessageDetail() {
           <div className="ap-card">
             <h3>Meta</h3>
             {row('Received', new Date(contact.createdAt).toLocaleString('en-GB'))}
-            <div style={{display:'flex',justifyContent:'space-between',padding:'9px 0',fontSize:13}}>
-              <span style={{color:'#64748b'}}>Status</span>
+            <div className="ap-drow" style={{borderBottom:'none'}}>
+              <span className="ap-drow-label">Status</span>
               <span className={`ap-badge ap-badge-${contact.status}`}>{contact.status}</span>
             </div>
           </div>
