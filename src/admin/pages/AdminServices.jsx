@@ -93,15 +93,47 @@ export default function AdminServices() {
                       </button>
                     </td>
                     <td style={{fontSize:13,color:'#94a3b8'}}>{s.order}</td>
-                    <td style={{display:'flex',gap:6}}>
-                      <button className="ap-btn ap-btn-ghost ap-btn-sm" onClick={()=>openEdit(s)}><Edit2 size={13}/></button>
-                      <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(s._id)}><Trash2 size={13}/></button>
+                    <td>
+                      <div className="ap-td-actions">
+                        <button className="ap-btn ap-btn-ghost ap-btn-sm" onClick={()=>openEdit(s)}><Edit2 size={13}/></button>
+                        <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(s._id)}><Trash2 size={13}/></button>
+                      </div>
                     </td>
                   </tr>
                 ))
             }
           </tbody>
         </table>
+      </div>
+
+      {/* ── MOBILE CARDS ── */}
+      <div className="ap-mobile-list">
+        {loading && !list.length
+          ? <div className="ap-loading">Loading…</div>
+          : list.length===0
+            ? <div className="ap-empty">No services yet. Tap "Add Service" to create your first one.</div>
+            : list.map(s=>(
+              <div key={s._id} className="ap-mcard">
+                <div className="ap-mcard-top">
+                  <span className="ap-mcard-name">{s.title}</span>
+                  <span className={`ap-badge ${s.active?'ap-badge-approved':'ap-badge-closed'}`}>
+                    {s.active ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Category</span><span className="ap-mcard-val">{s.category}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Slug</span><span className="ap-mcard-val">{s.slug}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Duration</span><span className="ap-mcard-val">{s.duration||'—'}</span></div>
+                <div className="ap-mcard-row"><span className="ap-mcard-label">Order</span><span className="ap-mcard-val">{s.order}</span></div>
+                <div className="ap-mcard-actions">
+                  <button className="ap-btn ap-btn-ghost ap-btn-sm" onClick={()=>toggle(s._id)}>
+                    {s.active ? <ToggleRight size={14}/> : <ToggleLeft size={14}/>} {s.active?'Disable':'Enable'}
+                  </button>
+                  <button className="ap-btn ap-btn-ghost ap-btn-sm" onClick={()=>openEdit(s)}><Edit2 size={13}/> Edit</button>
+                  <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(s._id)}><Trash2 size={13}/></button>
+                </div>
+              </div>
+            ))
+        }
       </div>
 
       {/* ── Modal ── */}

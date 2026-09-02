@@ -98,6 +98,54 @@ function StarRating({ value, onChange }) {
 }
 
 /* ══════════════════
+   REVIEW STRIP — thin card, 3-line clamp + Read more
+══════════════════ */
+function ReviewStrip({ review }) {
+  const [expanded, setExpanded] = useState(false);
+  const [clamped, setClamped]   = useState(false);
+  const textRef = useRef(null);
+
+  // Detect whether the text actually overflows 3 lines
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+    const check = () => setClamped(el.scrollHeight > el.clientHeight + 2);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [review.text]);
+
+  return (
+    <div className={`review-strip ${expanded ? 'review-strip--open' : ''}`}>
+      <div className="review-strip-head">
+        <div className="review-strip-avatar">{review.name.charAt(0).toUpperCase()}</div>
+        <div className="review-strip-who">
+          <strong>{review.name}</strong>
+          <span>{review.role || 'Verified Customer'}</span>
+        </div>
+        <div className="review-strip-stars">
+          {[...Array(5)].map((_, j) => (
+            <Star key={j} size={13}
+              fill={j < review.rating ? '#c9a84c' : 'none'}
+              color="#c9a84c" />
+          ))}
+        </div>
+      </div>
+
+      <p ref={textRef} className={`review-strip-text ${expanded ? 'is-open' : ''}`}>
+        &ldquo;{review.text}&rdquo;
+      </p>
+
+      {(clamped || expanded) && (
+        <button className="review-readmore" onClick={() => setExpanded(v => !v)}>
+          {expanded ? 'Read less' : 'Read more'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════
    REVIEWS SECTION — connected to backend
 ══════════════════ */
 function ReviewsSection() {
@@ -105,12 +153,29 @@ function ReviewsSection() {
   const [totalReviews, setTotal]  = useState(0);
   const [avgRating, setAvg]       = useState(0);
   const [showForm, setShowForm]   = useState(false);
-  const [idx, setIdx]             = useState(0);
+  const [page, setPage]           = useState(0);
+  const [perPage, setPerPage]     = useState(3);
   const [form, setForm]           = useState({ name:'', role:'', rating:5, text:'' });
   const [submitted, setSubmitted] = useState(false);
   const [submitErr, setSubmitErr] = useState('');
   const headRef  = useAos(0);
-  const emptyRef  = useAos(100);
+  const emptyRef = useAos(100);
+
+  /* how many strips per slide */
+  useEffect(() => {
+    const calc = () => {
+      const w = window.innerWidth;
+      if (w <= 700)  return 1;
+      if (w <= 1024) return 2;
+      return 3;
+    };
+    const apply = () => setPerPage(calc());
+    apply();
+    let t;
+    const onResize = () => { clearTimeout(t); t = setTimeout(apply, 150); };
+    window.addEventListener('resize', onResize);
+    return () => { window.removeEventListener('resize', onResize); clearTimeout(t); };
+  }, []);
 
   const loadReviews = async (silent = false) => {
     try {
@@ -118,22 +183,37 @@ function ReviewsSection() {
       setReviews(data.reviews || []);
       setTotal(data.total || 0);
       setAvg(data.averageRating || 0);
-      if (!silent) setIdx(0);
+      if (!silent) setPage(0);
     } catch {}
   };
 
-  // Initial load + poll every 10s
   useEffect(() => {
     loadReviews(false);
     const timer = setInterval(() => loadReviews(true), 10000);
     return () => clearInterval(timer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    if (reviews.length < 2) return;
-    const t = setInterval(() => setIdx(i => (i + 1) % reviews.length), 5000);
-    return () => clearInterval(t);
-  }, [reviews.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  const totalPages = Math.max(1, Math.ceil(reviews.length / perPage));
+
+  useEffect(() => { setPage(p => Math.min(p, totalPages - 1)); }, [totalPages]);
+
+  const next = () => setPage(p => (p + 1) % totalPages);
+  const prev = () => setPage(p => (p - 1 + totalPages) % totalPages);
+
+  const pages = [];
+  for (let i = 0; i < totalPages; i++) {
+    pages.push(reviews.slice(i * perPage, i * perPage + perPage));
+  }
+
+  /* swipe */
+  const touchX = useRef(null);
+  const onTouchStart = e => { touchX.current = e.touches[0].clientX; };
+  const onTouchEnd = e => {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
+    touchX.current = null;
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -142,7 +222,10 @@ function ReviewsSection() {
     try {
       await submitReview(form);
       setSubmitted(true);
-      setTimeout(() => { setShowForm(false); setSubmitted(false); setForm({ name:'', role:'', rating:5, text:'' }); }, 2500);
+      setTimeout(() => {
+        setShowForm(false); setSubmitted(false);
+        setForm({ name:'', role:'', rating:5, text:'' });
+      }, 2500);
     } catch(err) { setSubmitErr(err.message || 'Failed to submit. Please try again.'); }
   };
 
@@ -173,36 +256,37 @@ function ReviewsSection() {
             </button>
           </div>
         ) : (
-          <>
-            <div className="reviews-carousel">
-              <div className="reviews-track" style={{ transform:`translateX(-${idx * 100}%)` }}>
-                {reviews.map((r,i) => (
-                  <div key={i} className="review-card">
-                    <div className="review-stars">
-                      {[...Array(r.rating)].map((_,j) => <Star key={j} size={16} fill="#c9a84c" color="#c9a84c"/>)}
-                    </div>
-                    <p className="review-text">"{r.text}"</p>
-                    <div className="review-author">
-                      <div className="review-avatar">{r.name.charAt(0).toUpperCase()}</div>
-                      <div>
-                        <strong>{r.name}</strong>
-                        <span>{r.role || 'Verified Customer'}{r.date ? ` · ${r.date}` : ''}</span>
-                      </div>
-                    </div>
+          <div className="reviews-slider">
+            <button
+              className="reviews-arrow"
+              onClick={prev}
+              disabled={totalPages <= 1}
+              aria-label="Previous reviews"
+            >
+              <ChevronLeft size={20}/>
+            </button>
+
+            <div className="reviews-viewport" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+              <div className="reviews-track" style={{ transform:`translateX(-${page * 100}%)` }}>
+                {pages.map((group, i) => (
+                  <div className="reviews-page" key={i}>
+                    {group.map((r, j) => (
+                      <ReviewStrip key={r._id || `${i}-${j}`} review={r}/>
+                    ))}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="carousel-controls">
-              <button onClick={() => setIdx(i => (i - 1 + reviews.length) % reviews.length)}><ChevronLeft size={20}/></button>
-              <div className="carousel-dots">
-                {reviews.map((_,i) => (
-                  <button key={i} className={`dot ${i===idx?'dot--active':''}`} onClick={() => setIdx(i)}/>
-                ))}
-              </div>
-              <button onClick={() => setIdx(i => (i+1) % reviews.length)}><ChevronRight size={20}/></button>
-            </div>
-          </>
+
+            <button
+              className="reviews-arrow"
+              onClick={next}
+              disabled={totalPages <= 1}
+              aria-label="Next reviews"
+            >
+              <ChevronRight size={20}/>
+            </button>
+          </div>
         )}
       </div>
 
@@ -214,7 +298,7 @@ function ReviewsSection() {
               <div className="review-success">
                 <div className="success-tick"><Check size={32}/></div>
                 <h3>Thank you!</h3>
-                <p>Your review has been posted.</p>
+                <p>Your review has been submitted and will appear once approved.</p>
               </div>
             ) : (
               <>

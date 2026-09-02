@@ -81,6 +81,42 @@ const serviceData = {
     legal:'Part G Water Efficiency requirements apply to all new dwellings and are required as part of the Building Regulations sign-off process.',
     faq:[{ q:'Do I need water calculations for a conversion?', a:'Yes. Water calculations are required for both new build and converted residential properties as part of Building Regulations compliance.' }]
   },
+  'part-o': {
+    title:'Part O — Overheating Assessment', subtitle:'Overheating Risk Assessment for New Dwellings',
+    duration:'Desk-based', validity:'Design & completion stage',
+    description:'Government research concluded that the existing methodology for assessing overheating through SAP is unable to comprehensively assess the risk of overheating. As a result the government has introduced a new Building Regulation (Part O) making it a legal requirement for developers to provide Building Control Bodies with evidence to show they have reduced the risk of overheating. All new dwellings in England will require an overheating assessment, with Wales and Scotland proposing similar approaches.',
+    features:[
+      'Simplified Method assessment (prescribed table of limits)',
+      'Dynamic Thermal Modelling (DTM) — detailed route of compliance',
+      'Ideal for flats, single aspect dwellings and complex schemes',
+      'Suitable where the simplified method cannot be met',
+      'Greater design flexibility through detailed modelling',
+      'Full evidence pack for your Building Control Body',
+    ],
+    legal:'Approved Document O provides guidance on meeting the requirements of Part O, where a route of compliance is through either the simplified method (a prescribed table of limits to achieve) or the detailed method of Dynamic Thermal Modelling (DTM).',
+    faq:[
+      { q:'Which properties need a Part O assessment?', a:'All new dwellings in England require an overheating assessment. Wales and Scotland are proposing similar approaches.' },
+      { q:'What is the difference between the simplified method and DTM?', a:'The simplified method uses a prescribed table of limits that the design must achieve. Dynamic Thermal Modelling is the detailed route, expected to be used for many flats and single aspect dwellings, as well as dwellings that do not meet the simplified method requirements and where more design flexibility is needed.' },
+    ]
+  },
+  'part-f': {
+    title:'Part F — Ventilation Testing', subtitle:'Ventilation Testing & Reporting for Building Regulations',
+    duration:'Half day (typical)', validity:'On completion',
+    description:'With new build properties becoming increasingly more air tight, a renewed focus has been placed on ventilation and its correct installation. The requirement for adequate ventilation is present in both Part F of the Building Regulations and in PAS 2035 for retrofit projects. A Ventilation Report must be carried out to demonstrate compliance with Part F of the Building Regulations.',
+    features:[
+      'Testing of intermittent and continuous extract fans',
+      'Mechanical Ventilation with Heat Recovery (MVHR) system testing',
+      'Full Ventilation Report for Building Control',
+      'Compliance with Part F of the Building Regulations',
+      'Suitable for new build and PAS 2035 retrofit projects',
+      'Carried out alongside the airtightness test',
+    ],
+    legal:'A Ventilation Report must be carried out to demonstrate compliance with Part F of the Building Regulations. The requirement for adequate ventilation also applies under PAS 2035 for retrofit projects.',
+    faq:[
+      { q:'When should ventilation testing be carried out?', a:'It is typically one of the last assessments to take place once a property has been constructed, alongside the airtightness test, and should not be overlooked.' },
+      { q:'Which systems can you test?', a:'We test fan systems and mechanical heat recovery ventilation (MVHR) systems to demonstrate Part F compliance.' },
+    ]
+  },
   'hmo-licence': {
     title:'HMO / Additional / Selective Licence', subtitle:'Licence Application Support for Landlords',
     duration:'Varies', validity:'5 years (typical)',

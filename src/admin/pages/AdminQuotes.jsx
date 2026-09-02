@@ -3,11 +3,14 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAdminApi, usePolling } from '../hooks/useAdminApi';
 import { Search, Trash2, Eye, RefreshCw, ArrowLeft, Save, ChevronLeft, ChevronRight, Wifi } from 'lucide-react';
 
+/* ══════════════════════════════════════
+   QUOTES LIST — polls every 8s
+══════════════════════════════════════ */
 export function AdminQuotesList() {
-  const { request }          = useAdminApi();
-  const [status, setStatus]  = useState('all');
-  const [search, setSearch]  = useState('');
-  const [page, setPage]      = useState(1);
+  const { request }         = useAdminApi();
+  const [status, setStatus] = useState('all');
+  const [search, setSearch] = useState('');
+  const [page, setPage]     = useState(1);
 
   const { data, loading, refresh } = usePolling(
     () => {
@@ -58,7 +61,7 @@ export function AdminQuotesList() {
         </div>
       </div>
 
-      {/* DESKTOP TABLE */}
+      {/* ── DESKTOP TABLE ── */}
       <div className="ap-table-wrap">
         <table className="ap-table">
           <thead>
@@ -80,10 +83,12 @@ export function AdminQuotesList() {
                     <td style={{fontSize:12}}>{q.postcode||'—'}</td>
                     <td><span className={`ap-badge ap-badge-${q.status}`}>{q.status}</span></td>
                     <td style={{fontSize:12,color:'#64748b'}}>{new Date(q.createdAt).toLocaleDateString('en-GB')}</td>
-                    <td><div className="ap-td-actions">
-                      <Link to={`/admin/quotes/${q._id}`} className="ap-btn ap-btn-ghost ap-btn-sm"><Eye size={13}/></Link>
-                      <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(q._id)}><Trash2 size={13}/></button>
-                    </div></td>
+                    <td>
+                      <div className="ap-td-actions">
+                        <Link to={`/admin/quotes/${q._id}`} className="ap-btn ap-btn-ghost ap-btn-sm"><Eye size={13}/></Link>
+                        <button className="ap-btn ap-btn-danger ap-btn-sm" onClick={()=>del(q._id)}><Trash2 size={13}/></button>
+                      </div>
+                    </td>
                   </tr>
                 ))
             }
@@ -91,7 +96,7 @@ export function AdminQuotesList() {
         </table>
       </div>
 
-      {/* MOBILE CARDS */}
+      {/* ── MOBILE CARDS ── */}
       <div className="ap-mobile-list">
         {loading && !quotes.length
           ? <div className="ap-loading">Loading…</div>
@@ -128,6 +133,9 @@ export function AdminQuotesList() {
   );
 }
 
+/* ══════════════════════════════════════
+   QUOTE DETAIL
+══════════════════════════════════════ */
 export function AdminQuoteDetail() {
   const { id }              = useParams();
   const { request }         = useAdminApi();
@@ -168,7 +176,7 @@ export function AdminQuoteDetail() {
       <div className="ap-detail-bar">
         <Link to="/admin/quotes" className="ap-btn ap-btn-ghost"><ArrowLeft size={14}/> Back</Link>
         <div className="ap-detail-actions">
-          <select value={status} onChange={e=>setStatus(e.target.value)} className="ap-select" style={{width:'auto',minWidth:110}}>
+          <select value={status} onChange={e=>setStatus(e.target.value)} className="ap-select" style={{width:'auto',minWidth:112}}>
             {['new','read','responded','closed'].map(s=><option key={s} value={s}>{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
           </select>
           <button className="ap-btn ap-btn-primary" onClick={save}><Save size={13}/> {saved?'✓ Saved!':'Save'}</button>
@@ -180,9 +188,9 @@ export function AdminQuoteDetail() {
         <div style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
           <div className="ap-card">
             <h3>Contact Details</h3>
-            {row('Name',   quote.name)}
-            {row('Email',  quote.email)}
-            {row('Phone',  quote.phone)}
+            {row('Name',  quote.name)}
+            {row('Email', <a href={`mailto:${quote.email}`} style={{color:'#c9a84c'}}>{quote.email}</a>)}
+            {row('Phone', <a href={`tel:${(quote.phone||'').replace(/\s/g,'')}`} style={{color:'#c9a84c'}}>{quote.phone}</a>)}
             {row('Preferred Date', quote.preferredDate||'Flexible')}
           </div>
           <div className="ap-card">
@@ -195,9 +203,12 @@ export function AdminQuoteDetail() {
           {quote.notes && (
             <div className="ap-card">
               <h3>Client Notes</h3>
-              <p style={{fontSize:13,color:'#94a3b8',lineHeight:1.7,whiteSpace:'pre-wrap'}}>{quote.notes}</p>
+              <p style={{fontSize:13,color:'#94a3b8',lineHeight:1.7,whiteSpace:'pre-wrap',wordBreak:'break-word'}}>{quote.notes}</p>
             </div>
           )}
+          <a href={`mailto:${quote.email}?subject=Your MBPSS Quote`} className="ap-btn ap-btn-primary" style={{alignSelf:'flex-start'}}>
+            ✉ Reply by Email
+          </a>
         </div>
 
         <div style={{display:'flex',flexDirection:'column',gap:16,minWidth:0}}>
@@ -205,7 +216,11 @@ export function AdminQuoteDetail() {
             <h3>Services Requested</h3>
             <div style={{display:'flex',flexDirection:'column',gap:6}}>
               {(quote.selectedServices||[]).map((s,i) => (
-                <div key={i} style={{background:'rgba(201,168,76,0.1)',border:'1px solid rgba(201,168,76,0.2)',color:'#c9a84c',padding:'6px 12px',borderRadius:8,fontSize:12,fontWeight:600,wordBreak:'break-word'}}>{s}</div>
+                <div key={i} style={{
+                  background:'rgba(201,168,76,0.1)',border:'1px solid rgba(201,168,76,0.2)',
+                  color:'#c9a84c',padding:'6px 12px',borderRadius:8,fontSize:12,
+                  fontWeight:600,wordBreak:'break-word',
+                }}>{s}</div>
               ))}
             </div>
           </div>
@@ -216,7 +231,7 @@ export function AdminQuoteDetail() {
           <div className="ap-card">
             <h3>Meta</h3>
             {row('Submitted', new Date(quote.createdAt).toLocaleString('en-GB'))}
-            <div className="ap-drow" style={{borderBottom:'none'}}>
+            <div className="ap-drow">
               <span className="ap-drow-label">Status</span>
               <span className={`ap-badge ap-badge-${quote.status}`}>{quote.status}</span>
             </div>

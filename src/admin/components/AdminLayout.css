@@ -19,16 +19,16 @@
   border-right: 1px solid rgba(255,255,255,0.07);
   display: flex; flex-direction: column;
   position: fixed; top: 0; left: 0; height: 100vh;
-  z-index: 500; transition: transform 0.3s ease;
+  z-index: 500; transition: transform .3s ease;
 }
 .al-logo { padding: 22px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
 .al-logo-name { display: block; font-size: 20px; font-weight: 700; color: #c9a84c; letter-spacing: 1.5px; }
-.al-logo-sub { font-size: 10px; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
+.al-logo-sub  { font-size: 10px; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
 .al-nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; }
 .al-nav-item {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px;
   border-radius: 8px; font-size: 13px; font-weight: 500; color: #94a3b8;
-  transition: background 0.2s, color 0.2s; position: relative;
+  transition: background .2s, color .2s; position: relative;
 }
 .al-nav-item:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
 .al-nav-item--active { background: rgba(201,168,76,0.12); color: #c9a84c; }
@@ -36,13 +36,16 @@
 .al-logout {
   margin: 12px; padding: 10px 14px; border-radius: 8px; background: transparent;
   border: 1px solid rgba(255,255,255,0.08); color: #64748b; font-size: 13px;
-  font-weight: 500; display: flex; align-items: center; gap: 8px; transition: 0.2s;
+  font-weight: 500; display: flex; align-items: center; gap: 8px; transition: .2s;
 }
 .al-logout:hover { background: rgba(239,68,68,0.1); color: #f87171; border-color: #f87171; }
 .al-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 499; backdrop-filter: blur(2px); }
 
 /* ── MAIN ── */
-.al-main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; min-width: 0; }
+.al-main {
+  flex: 1; margin-left: 220px; display: flex; flex-direction: column;
+  min-height: 100vh; min-width: 0;
+}
 .al-topbar {
   height: 58px; background: #1a1d27; border-bottom: 1px solid rgba(255,255,255,0.07);
   display: flex; align-items: center; padding: 0 22px; gap: 14px;
@@ -53,7 +56,7 @@
 .al-topbar-right { display: flex; align-items: center; gap: 14px; }
 .al-site-link {
   font-size: 12px; color: #c9a84c; border: 1px solid rgba(201,168,76,0.3);
-  padding: 5px 12px; border-radius: 6px; transition: 0.2s; white-space: nowrap;
+  padding: 5px 12px; border-radius: 6px; transition: .2s; white-space: nowrap;
 }
 .al-site-link:hover { background: rgba(201,168,76,0.1); }
 .al-user { display: flex; align-items: center; gap: 8px; }
@@ -67,9 +70,9 @@
 
 /* ── RESPONSIVE GRID UTILITIES ── */
 .al-wrap .ap-grid        { display: grid; gap: 14px; min-width: 0; }
+.al-wrap .ap-grid-2      { grid-template-columns: repeat(2, 1fr); }
 .al-wrap .ap-grid-3      { grid-template-columns: repeat(3, 1fr); }
 .al-wrap .ap-grid-4      { grid-template-columns: repeat(4, 1fr); }
-.al-wrap .ap-grid-2      { grid-template-columns: repeat(2, 1fr); }
 .al-wrap .ap-grid-charts { grid-template-columns: 1.5fr 1fr; }
 .al-wrap .ap-grid-detail { grid-template-columns: 1fr 300px; gap: 20px; }
 .al-wrap .ap-grid > *    { min-width: 0; }
@@ -77,7 +80,7 @@
 /* ── SHARED COMPONENTS ── */
 .al-wrap .ap-header {
   display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 16px; margin-bottom: 4px; flex-wrap: wrap;
+  gap: 16px; flex-wrap: wrap;
 }
 .al-wrap .ap-header h1 { font-size: 20px; font-weight: 700; color: #e2e8f0; margin-bottom: 2px; }
 .al-wrap .ap-header p  { font-size: 13px; color: #64748b; }
@@ -85,7 +88,7 @@
 .al-wrap .ap-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
-  border: none; cursor: pointer; transition: 0.2s; white-space: nowrap;
+  border: none; cursor: pointer; transition: .2s; white-space: nowrap;
 }
 .al-wrap .ap-btn-primary { background: #c9a84c; color: #0f1117; }
 .al-wrap .ap-btn-primary:hover { background: #e8c96a; }
@@ -105,23 +108,25 @@
   font-size: 12px; font-weight: 700; color: #64748b;
   text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
 }
-.al-wrap .ap-card .recharts-wrapper,
-.al-wrap .ap-card .recharts-responsive-container { max-width: 100% !important; }
+.al-wrap .ap-chart-box { width: 100%; min-width: 0; }
+.al-wrap .recharts-responsive-container,
+.al-wrap .recharts-wrapper { max-width: 100% !important; }
 
 /* ── STAT CARD ── */
 .al-wrap .ap-stat {
   background: #1a1d27; border: 1px solid rgba(255,255,255,0.07);
   border-radius: 12px; padding: 18px; display: flex; gap: 14px;
-  align-items: flex-start; transition: .2s; min-width: 0;
+  align-items: flex-start; transition: .2s; min-width: 0; height: 100%;
 }
+.al-wrap .ap-stat:hover { border-color: rgba(201,168,76,.35); }
 .al-wrap .ap-stat-icon {
   width: 40px; height: 40px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.al-wrap .ap-stat-body { min-width: 0; }
-.al-wrap .ap-stat-val { font-size: 24px; font-weight: 700; color: #e2e8f0; line-height: 1.2; }
+.al-wrap .ap-stat-body  { min-width: 0; }
+.al-wrap .ap-stat-val   { font-size: 24px; font-weight: 700; color: #e2e8f0; line-height: 1.2; }
 .al-wrap .ap-stat-label { font-size: 12px; color: #64748b; margin-top: 2px; }
-.al-wrap .ap-stat-sub { font-size: 11px; color: #c9a84c; margin-top: 3px; word-break: break-word; }
+.al-wrap .ap-stat-sub   { font-size: 11px; color: #c9a84c; margin-top: 3px; word-break: break-word; }
 
 /* ── TABLE ── */
 .al-wrap .ap-table-wrap {
@@ -132,7 +137,7 @@
 .al-wrap .ap-table th {
   padding: 11px 14px; text-align: left; color: #64748b; font-weight: 600;
   border-bottom: 1px solid rgba(255,255,255,0.07);
-  font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
+  font-size: 11px; letter-spacing: .5px; text-transform: uppercase; white-space: nowrap;
 }
 .al-wrap .ap-table td {
   padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -153,7 +158,7 @@
   display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;
 }
 .al-wrap .ap-mcard-name { font-size: 14px; font-weight: 700; color: #e2e8f0; word-break: break-word; }
-.al-wrap .ap-mcard-row { display: flex; gap: 10px; font-size: 12px; align-items: flex-start; }
+.al-wrap .ap-mcard-row  { display: flex; gap: 10px; font-size: 12px; align-items: flex-start; }
 .al-wrap .ap-mcard-label {
   color: #64748b; min-width: 68px; flex-shrink: 0;
   text-transform: uppercase; font-size: 10px; font-weight: 700; letter-spacing: .5px; padding-top: 1px;
@@ -184,7 +189,7 @@
 .al-wrap .ap-input, .al-wrap .ap-select, .al-wrap .ap-textarea {
   width: 100%; padding: 10px 12px; background: #22263a;
   border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-  color: #e2e8f0; font-size: 13px; font-family: inherit; outline: none; transition: 0.2s;
+  color: #e2e8f0; font-size: 13px; font-family: inherit; outline: none; transition: .2s;
 }
 .al-wrap .ap-input:focus, .al-wrap .ap-select:focus, .al-wrap .ap-textarea:focus { border-color: #c9a84c; }
 .al-wrap .ap-textarea { resize: vertical; min-height: 90px; }
@@ -203,32 +208,50 @@
 .al-wrap .ap-filter-btn {
   padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
   background: #1a1d27; border: 1px solid rgba(255,255,255,0.08);
-  color: #94a3b8; cursor: pointer; transition: 0.2s; font-family: inherit; white-space: nowrap;
+  color: #94a3b8; cursor: pointer; transition: .2s; font-family: inherit; white-space: nowrap;
 }
 .al-wrap .ap-filter-btn:hover  { color: #e2e8f0; border-color: #c9a84c; }
 .al-wrap .ap-filter-btn.active { background: rgba(201,168,76,0.12); color: #c9a84c; border-color: #c9a84c; }
 
-.al-wrap .ap-empty { text-align: center; color: #64748b; padding: 40px 16px; font-style: italic; }
+.al-wrap .ap-empty   { text-align: center; color: #64748b; padding: 40px 16px; font-style: italic; }
 .al-wrap .ap-loading { text-align: center; color: #64748b; padding: 40px 16px; }
 .al-wrap .ap-pagination {
   display: flex; align-items: center; justify-content: center;
   gap: 14px; padding: 16px; font-size: 13px; color: #64748b;
 }
 
-/* ── DETAIL ROW ── */
+/* ── DETAIL ROWS ── */
 .al-wrap .ap-drow {
   display: flex; justify-content: space-between; gap: 12px;
   padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px;
 }
 .al-wrap .ap-drow:last-child { border-bottom: none; }
 .al-wrap .ap-drow-label { color: #64748b; flex-shrink: 0; }
-.al-wrap .ap-drow-val { color: #e2e8f0; text-align: right; word-break: break-word; min-width: 0; }
+.al-wrap .ap-drow-val   { color: #e2e8f0; text-align: right; word-break: break-word; min-width: 0; }
 
 .al-wrap .ap-detail-bar {
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 12px;
 }
 .al-wrap .ap-detail-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* ── REVIEW CARD (admin) ── */
+.al-wrap .ap-review-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 10px;
+}
+.al-wrap .ap-review-who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.al-wrap .ap-review-avatar {
+  width: 38px; height: 38px; border-radius: 50%; background: #c9a84c;
+  color: #0f1117; font-weight: 700; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.al-wrap .ap-review-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.al-wrap .ap-review-foot {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px;
+}
+.al-wrap .ap-review-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* ── MODAL ── */
 .al-wrap .ap-modal-overlay {
@@ -246,13 +269,19 @@
   padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 .al-wrap .ap-modal-header h3 { font-size: 15px; font-weight: 700; color: #e2e8f0; }
-.al-wrap .ap-modal-body { padding: 20px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.al-wrap .ap-modal-body {
+  padding: 20px 22px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
 .al-wrap .ap-modal-footer {
   padding: 14px 22px; border-top: 1px solid rgba(255,255,255,0.07);
   display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
 }
 .al-wrap .ap-fg { display: flex; flex-direction: column; gap: 6px; }
-.al-wrap .ap-fg label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+.al-wrap .ap-fg label {
+  font-size: 11px; font-weight: 700; color: #64748b;
+  text-transform: uppercase; letter-spacing: .5px;
+}
 .al-wrap .ap-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 .al-wrap .ap-error {
@@ -280,17 +309,17 @@
 @media (max-width: 768px) {
   .al-sidebar { transform: translateX(-100%); }
   .al-sidebar--open { transform: translateX(0); }
-  .al-main { margin-left: 0; }
-  .al-burger { display: flex; }
-  .al-username { display: none; }
+  .al-main    { margin-left: 0; }
+  .al-burger  { display: flex; }
+  .al-username{ display: none; }
   .al-content { padding: 16px; }
-  .al-topbar { padding: 0 14px; gap: 10px; }
+  .al-topbar  { padding: 0 14px; gap: 10px; }
   .al-page-title { font-size: 14px; }
 
   .al-wrap .ap-grid-3 { grid-template-columns: repeat(2, 1fr); }
 
   /* swap table → cards */
-  .al-wrap .ap-table-wrap { display: none; }
+  .al-wrap .ap-table-wrap  { display: none; }
   .al-wrap .ap-mobile-list { display: flex; }
 
   .al-wrap .ap-header h1 { font-size: 18px; }
@@ -308,10 +337,12 @@
   .al-wrap .ap-detail-actions { width: 100%; }
   .al-wrap .ap-detail-actions > * { flex: 1; }
   .al-wrap .ap-modal-footer .ap-btn { flex: 1; }
+  .al-wrap .ap-review-actions { width: 100%; }
+  .al-wrap .ap-review-actions .ap-btn { flex: 1; }
   .al-site-link { display: none; }
 }
 
 @media (max-width: 380px) {
-  .al-wrap .ap-filter-btn { padding: 6px 10px; font-size: 11px; }
+  .al-wrap .ap-filter-btn  { padding: 6px 10px; font-size: 11px; }
   .al-wrap .ap-mcard-label { min-width: 58px; }
 }
